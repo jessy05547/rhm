@@ -1052,3 +1052,83 @@
     text-overflow: ellipsis;
     font-weight: 400;
 }
+/* dashboard */
+/* 1* employe pagination */
+.dashboard-table-employe{
+    width:100%;
+    height:auto;
+    border-radius:12px;
+    position:absolute;
+    bottom: 60px;
+}
+.dashboard-table-employe .dashboard-table-employe{
+    width:100%;
+    height:100%;
+    border:1px;
+    border-radius:12px;
+}
+.dashboard-table-employe .dashboard-table-employe .dashboard-thead-employe{
+    width:100%;
+    height:30px;
+    background: #1bc0dd;
+    border-radius: 12px;                                            
+    position: sticky;
+    top:0;
+    z-index: 9999;
+}
+.dashboard-table-employe .dashboard-table-employe .dashboard-thead-employe .dashboard-tr-head{
+    width:100%;
+    height:100%;
+    position:relative;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+.dashboard-table-employe .dashboard-table-employe .dashboard-thead-employe .dashboard-tr-head .dashboard-th-employe{
+    font-size: 14px;
+    color: #01252c;
+}
+.dashboard-table-employe .dashboard-tbody-employe .dashboard-tro-employe{
+    width: 100%;
+    height: auto;
+    padding-bottom: 10px;
+    background: rgba(209, 200, 200, 0.356);
+    border-bottom-left-radius:12px ;
+    border-bottom-right-radius: 12px;
+}
+.dashboard-table-employe .dashboard-tbody-employe .dashboard-tr-employe .dashboard-td-employe{
+    width:20%;
+    height:40px;
+    border-bottom:1px solid #01252c;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:14px;
+    font-weight:500;
+    text-align:center;
+    text-overflow: ellipsis;
+    color:#e4ebec;
+}
+.dashboard-table-employe .dashboard-tbody-employe .dashboard-tr-employe .dashboard-td-employe .prenom-dashboard{
+    font-size:12px;
+    color:#9e9595;
+}
+.dashboard-table-employe .dashboard-tbody-employe .dashboard-tr-employe .dashboard-td-employe:hover{
+    background:rgba(255, 255, 255, 0.123);
+    color:#0f6c7c;
+    font-weight:600;
+}
+.dashboard-pagination-link{
+    width:100%;
+    height:50px;
+    color:#0f6c7c;
+    font-size:14px;
+    position:absolute;
+    bottom:0;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    /* display:flex; */
+}

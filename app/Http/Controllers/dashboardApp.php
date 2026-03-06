@@ -28,9 +28,15 @@ class dashboardApp extends Controller
         $labels = $data->pluck('jours');
         $dataValue = $data->pluck('nombre');
 
+        $nombreEmployes = employe::where('id_utilisateur', $userSession)->count();
+
+        $employePagination = employe::where('id_utilisateur', $userSession)->latest()->paginate(5);
         return view('index.dashboard', [
             'labels' => $labels,
-            'data' => $dataValue
+            'data' => $dataValue,
+            'nombreEmployes' => $nombreEmployes,
+            'employePagination' => $employePagination
         ]);
     }
+    
 }

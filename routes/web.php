@@ -7,17 +7,17 @@ use App\Http\Controllers\pointage;
 use App\Http\Controllers\contConge;
 use App\Http\Controllers\dashboardApp;
 use Sopamo\LaravelFilepond\Http\Controllers\FilepondController;
-
-// Ajoutez ceci AVANT vos autres routes ou à l'intérieur de votre groupe 'filepond'
-
-// Route::match(['post', 'patch'], '/filepond/api/process', [FilepondController::class, 'process']);
-
-// Les routes FilePond sont enregistrées par le ServiceProvider de Sopamo
-// URLs: POST /filepond/api/process (upload), PATCH /filepond/api (chunk), DELETE /filepond/api/process (delete)
+use App\Http\Controllers\FileUploadController; 
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::post('/upload/process', [contEmploye::class, 'process'])->name('upload.process');
+Route::delete('/upload/revert', [contEmploye::class, 'revert'])->name('upload.revert');
+Route::post('/upload/process', [contUtilisateur::class, 'process'])->name('upload.process');
+Route::delete('/upload/revert', [contUtilisateur::class, 'revert'])->name('upload.revert');
 
 // 2. Debug (Gardez ceci pour vérifier si votre modifie php.ini est bien active)
 Route::get('/check-php', function() {

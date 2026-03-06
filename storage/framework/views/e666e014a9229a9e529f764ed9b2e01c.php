@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite(['resources/css/style.css', 'resources/js/app.js','resources/js/chunking.js','resources/js/controlChamp.js','resources/js/graphe.js'])
-    <title>@yield('title')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/style.css', 'resources/js/app.js','resources/js/chunking.js','resources/js/controlChamp.js','resources/js/graphe.js']); ?>
+    <title><?php echo $__env->yieldContent('title'); ?></title>
 </head>
 <body>
     <header class="parent">
         <div class="dashboard-profil">
             <div class="profil-search">
-                <form action="{{ route('presence.recherche') }}" method="get" id="src-profil">
+                <form action="<?php echo e(route('presence.recherche')); ?>" method="get" id="src-profil">
                     <input type="text" name="search" id="search" placeholder="Est-ce que je suis présent ?">
                 </form>
                 <form action="" method="get">
@@ -23,25 +23,25 @@
                     <img src="" alt="" id="user-image">
                 </div>
                 <div class="profil-name">
-                    <h5 class="profil-name-user">{{ session('utilisateur_nom') }}</h5>
-                    <p class="profil-firstName-user">{{ session('utilisateur_prenom') }}</p>
+                    <h5 class="profil-name-user"><?php echo e(session('utilisateur_nom')); ?></h5>
+                    <p class="profil-firstName-user"><?php echo e(session('utilisateur_prenom')); ?></p>
                 </div>
             </div>
         </div>
         <div class="dashboard-menu">
             <div class="menu-columns">
                 <div class="image-logo">
-                    <img src="{{ asset('imgs/logo.png') }}" alt="" id="logo">
+                    <img src="<?php echo e(asset('imgs/logo.png')); ?>" alt="" id="logo">
                 </div>
                 <nav class="menu-layout">
                     <ul id="liste-menu">
-                        <li><a href="{{ route('index.dashboard') }}" class="{{ request()->routeIs('index.dashboard') ? 'active' : '' }}"><i class="fi fi-sr-chart-histogram text-amber-50 text-xl"></i></a></li>
+                        <li><a href="<?php echo e(route('index.dashboard')); ?>" class="<?php echo e(request()->routeIs('index.dashboard') ? 'active' : ''); ?>"><i class="fi fi-sr-chart-histogram text-amber-50 text-xl"></i></a></li>
                         
-                        <li><a href="{{ route('employe.listeEmploye') }}" class="{{ request()->routeIs('employe.listeEmploye') ? 'active' : '' }}"><i class="fi fi-rr-users text-amber-50 text-xl"></i></a></li>
+                        <li><a href="<?php echo e(route('employe.listeEmploye')); ?>" class="<?php echo e(request()->routeIs('employe.listeEmploye') ? 'active' : ''); ?>"><i class="fi fi-rr-users text-amber-50 text-xl"></i></a></li>
                         
-                        <li><a href="{{ route('conge.liste') }}" class="{{ request()->routeIs('conge.liste') ? 'active' : '' }}"><i class="fi fi-rr-house-leave text-amber-50 text-xl"></i></a></li>
+                        <li><a href="<?php echo e(route('conge.liste')); ?>" class="<?php echo e(request()->routeIs('conge.liste') ? 'active' : ''); ?>"><i class="fi fi-rr-house-leave text-amber-50 text-xl"></i></a></li>
                         
-                        <li><a href="{{ route('presence.presenceAjout') }}" class="{{ request()->routeIs('presence.presenceAjout') ? 'active' : '' }}"><i class="fi fi-rr-time-watch-calendar text-amber-50 text-xl"></i></a></li>
+                        <li><a href="<?php echo e(route('presence.presenceAjout')); ?>" class="<?php echo e(request()->routeIs('presence.presenceAjout') ? 'active' : ''); ?>"><i class="fi fi-rr-time-watch-calendar text-amber-50 text-xl"></i></a></li>
                         
                     </ul>
                     <!-- <ul id="infobulle">
@@ -53,7 +53,7 @@
                 </nav>
                 <div class="btn-logout">
                     <ul id="logout-layout">
-                        <li><a href="{{ route('user.logout') }}"><i class="fi fi-ss-exit text-amber-50 text-xl"></i></a></li>
+                        <li><a href="<?php echo e(route('user.logout')); ?>"><i class="fi fi-ss-exit text-amber-50 text-xl"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -61,17 +61,19 @@
         </div>
         <div class="dashboard-body">
             <div class="wrapper">
-                @if (session('error'))
+                <?php if(session('error')): ?>
                     <div class="error-message" style="width:300px;height: auto;color: #d32f2f; margin-bottom: 10px;background: #f0f0f06e; padding: 10px; border-radius: 5px;display: flex;justify-content:center;font-weight: 500;align-items:center;gap:10px;"><i class="fi fi-ss-braker-warning" style="color:#d32f2f;"></i>
-                        {{ session('error') }}
+                        <?php echo e(session('error')); ?>
+
                     </div>
-                @endif
-                @if (session('success'))
+                <?php endif; ?>
+                <?php if(session('success')): ?>
                     <div class="success-message" style="color: #2fd345;margin-bottom: 10px;background: #f0f0f06e; padding: 10px; border-radius: 5px;display: flex;justify-content:center;width:300px;height: 5vh;font-weight: 500;align-items:center;gap:10px;"><i class="fi fi-rr-check" style="color:#2fd345;"></i>
-                        {{ session('success') }}
+                        <?php echo e(session('success')); ?>
+
                     </div>
-                @endif
-                @yield('content')
+                <?php endif; ?>
+                <?php echo $__env->yieldContent('content'); ?>
             </div>
         </div>
     </header>
@@ -114,4 +116,4 @@
         window.addEventListener('load', () => Progress.finish());
     </script>   
 </body>
-</html>
+</html><?php /**PATH C:\wamp64\www\rhm\resources\views/index/layouts.blade.php ENDPATH**/ ?>

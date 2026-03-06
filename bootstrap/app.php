@@ -11,9 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // C'est ici qu'on définit les exceptions CSRF dans Laravel 11
+        // On remplace 'filepond/api/*' par 'upload/*' 
+        // car tes nouvelles routes dans web.php commencent par /upload
         $middleware->validateCsrfTokens(except: [
-            'filepond/api/*', 
+            'upload/*', 
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

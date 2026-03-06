@@ -1,11 +1,11 @@
-@extends('index.layouts')
-@section('title', 'Tableau de bord - Application')
-@section('content')
+
+<?php $__env->startSection('title', 'Tableau de bord - Application'); ?>
+<?php $__env->startSection('content'); ?>
     <section class="dashboard-parent-ctx">
         <div class="ctx-partition-top">
             <div class="title-ctx">
                 <h2 class="title-ctx-init">Pointage dans les départements</h2>
-                <p class="nombre-employe">{{ $nombreEmployes }} employés</p>
+                <p class="nombre-employe"><?php echo e($nombreEmployes); ?> employés</p>
             </div>
             <div class="card-ctx"></div>
         </div>
@@ -23,27 +23,28 @@
                     </tr>
                 </thead>
                 <tbody class="dashboard-tbody-employe">
-                    @foreach ($employePagination as $employe)
+                    <?php $__currentLoopData = $employePagination; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $employe): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr class="dashboard-tro-employe">
-                        <td class="dashboard-td-employe">{{ $employe->nom }}</td>
-                        <td class="dashboard-td-employe">{{ $employe->prenom }}</td>
-                        <td class="dashboard-td-employe">{{ $employe->departement }}</td>
-                        <td class="dashboard-td-employe">{{ $employe->date_embauche }}</td>
+                        <td class="dashboard-td-employe"><?php echo e($employe->nom); ?></td>
+                        <td class="dashboard-td-employe"><?php echo e($employe->prenom); ?></td>
+                        <td class="dashboard-td-employe"><?php echo e($employe->departement); ?></td>
+                        <td class="dashboard-td-employe"><?php echo e($employe->date_embauche); ?></td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
             <div class="dashboard-pagination-link">
-                {{ $employePagination->links() }}
+                <?php echo e($employePagination->links()); ?>
+
             </div>
         </div>
     </section>
     
-    @vite(['resources\js\graphe.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources\js\graphe.js']); ?>
     <script type="module">
         
-        const labels = {!! json_encode($labels) !!};
-        const dataValue = {!! json_encode($data) !!};
+        const labels = <?php echo json_encode($labels); ?>;
+        const dataValue = <?php echo json_encode($data); ?>;
         
         const ctx = document.getElementById('ChartLine').getContext('2d');
         let gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -75,4 +76,5 @@
             }
         })
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('index.layouts', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\wamp64\www\rhm\resources\views/index/dashboard.blade.php ENDPATH**/ ?>

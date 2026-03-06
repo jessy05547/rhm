@@ -8,6 +8,7 @@ use App\Models\utilisateur;
 use App\Models\departement;
 use App\Models\poste;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class contUtilisateur extends Controller
 {
@@ -52,16 +53,45 @@ class contUtilisateur extends Controller
             $validatedData['password'] = bcrypt($validatedData['password']);
             $utilisateur = utilisateur::create($validatedData);
 
-            if($request->has('photo') && !empty($request->input('photo'))){
-                $path = $filepond->getPathFromServerId($request->input('photo'));
-                if($path && file_exists($path)){
-                    $utilisateur->addMedia($path)->toMediaCollection('photos');
+            if ($request->filled('photo')) {
+                $tempPath = storage_path('app/public/' . $request->input('photo'));
+
+                if (file_exists($tempPath)) {
+                    $utilisateur->addMedia($tempPath)
+                            ->toMediaCollection('photos');
+                    // Media Library déplace le fichier, donc le dossier temporaire sera vide
                 }
             }
             return redirect()->route('login')->with('success', 'Compte créé avec succès. Veuillez vous connecter.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erreur lors de la création du compte : ' . $e->getMessage());
         }
+    }
+    public function process(Request $request)
+    {
+        // 'photo' doit correspondre au name de votre input FilePond
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            
+            // On stocke dans storage/app/public/temp
+            $path = $file->store('temp', 'public');
+
+            // On retourne le chemin relatif que FilePond va stocker 
+            // dans le champ caché 'photo' de votre formulaire principal
+            return $path; 
+        }
+
+        return response()->json(['error' => 'Fichier introuvable'], 400);
+    }
+
+    public function revert(Request $request)
+    {
+        // Logique pour supprimer le fichier si l'utilisateur clique sur "Annuler"
+        $path = $request->getContent();
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+        return response()->noContent();
     }
     public function login(Request $request){
         $credentials = $request->validate([

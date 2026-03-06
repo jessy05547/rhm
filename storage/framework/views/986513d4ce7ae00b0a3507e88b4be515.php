@@ -1,23 +1,23 @@
-@extends('index.layouts')
-@section('title', 'Liste des travailleurs')
-@section('content')
+
+<?php $__env->startSection('title', 'Liste des travailleurs'); ?>
+<?php $__env->startSection('content'); ?>
     <section class="liste-employe-parent">
         <div class="card-total-employe">
             <div class="card-one-employe">
-                @foreach ($departements as $departement)
+                <?php $__currentLoopData = $departements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $departement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="card-item-departement">
                     <div class="card-item-title">
-                        <p class="card-title-departement">{{ $departement->departement }}</p>
+                        <p class="card-title-departement"><?php echo e($departement->departement); ?></p>
                     </div>
                     <div class="card-item-content">
-                        <h4 class="nombre-departement">{{ $departement->employee_count }}</h4>
+                        <h4 class="nombre-departement"><?php echo e($departement->employee_count); ?></h4>
                         <div class="nombre-departement-t">
-                            <a href="#" class="pourcent-departement">{{ number_format($departement->pourcentage, 1)}}%</a>
-                            <p class="libelle-pourcent-departement">Le nombre des employés actuels dans {{ $departement->departement }}</p>
+                            <a href="#" class="pourcent-departement"><?php echo e(number_format($departement->pourcentage, 1)); ?>%</a>
+                            <p class="libelle-pourcent-departement">Le nombre des employés actuels dans <?php echo e($departement->departement); ?></p>
                         </div>
                     </div>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <div class="btn-change-preview" style="
                     width:100%;
                     height:auto;
@@ -28,16 +28,16 @@
                     position: absolute;
                     bottom: 70px;
                 ">
-                @if ($departements->currentPage() > 1)
-                    <a href="{{ $departements->previousPageUrl() }}" class="btn-change-preview-item">
+                <?php if($departements->currentPage() > 1): ?>
+                    <a href="<?php echo e($departements->previousPageUrl()); ?>" class="btn-change-preview-item">
                         <i class="fi fi-sr-angle-left" style="color:#01252c; display: flex;align-items:center; width: 40px;height:40px;border-radius: 50%; background: #f0f0f06e;justify-content:center; border:1px solid #02dffc;"></i>
                     </a>
-                @else
+                <?php else: ?>
                     <a href="#" class="btn-change-preview-item">
                         <i class="fi fi-sr-angle-left" style="color:#01252c; display: flex;align-items:center; width: 40px;height:40px;border-radius: 50%; background: #f0f0f06e;justify-content:center; border:1px solid #02dffc;"></i>
                     </a>
-                @endif
-                <a href="{{ $departements->nextPageUrl() }}" class="btn-change-preview-item">
+                <?php endif; ?>
+                <a href="<?php echo e($departements->nextPageUrl()); ?>" class="btn-change-preview-item">
                     <i class="fi fi-sr-angle-right" style="color:#01252c; display: flex;align-items:center; width: 40px;height:40px;border-radius: 50%; background: #f0f0f06e;justify-content:center; border:1px solid #02dffc;"></i>
                 </a>
                 </div>
@@ -45,12 +45,12 @@
             
             <div class="card-outil-employe">
                 <div class="employe-search-profil">
-                    <form action="{{ route('employe.search') }}" method="get" id="query-search">
-                        @csrf
+                    <form action="<?php echo e(route('employe.search')); ?>" method="get" id="query-search">
+                        <?php echo csrf_field(); ?>
                         <input type="text" name="query" id="query-src" placeholder="Qu'est-ce qui vous cherchez ?">
                     </form>
                 </div>
-                <a href="{{ route('employe.index') }}" class="employe-ajout-element-form">
+                <a href="<?php echo e(route('employe.index')); ?>" class="employe-ajout-element-form">
                     <i class="fi fi-sr-add" style="color:#01252c; display: flex;align-items:center;"></i>
                     <p class="createEmploye-ajout">Ajouter</p>
                 </a>
@@ -72,39 +72,39 @@
                     </tr>
                 </thead>
                 <tbody class="body-liste-employe">
-                    @foreach ($employes as $employe)
+                    <?php $__currentLoopData = $employes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $employe): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr class="child-body-employe">
                         <td class="element-body-liste">
-                            @if ($employe->hasMedia('photos'))
-                                <img src="{{ $employe->getFirstMediaUrl('photos') }}" alt="Photo de {{ $employe->nom }}" class="photo-employe-liste" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
-                            @else
+                            <?php if($employe->hasMedia('photos')): ?>
+                                <img src="<?php echo e($employe->getFirstMediaUrl('photos')); ?>" alt="Photo de <?php echo e($employe->nom); ?>" class="photo-employe-liste" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                            <?php else: ?>
                                 <div class="photo-employe-placeholder">
                                     <i class="fi fi-rr-user" style="color:#01252c; display: flex;align-items:center;"></i>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </td>
-                        <td class="element-body-liste">{{ $employe->sexe }}</td>
+                        <td class="element-body-liste"><?php echo e($employe->sexe); ?></td>
                         <td class="element-body-liste">
-                            <h6 class="nom-body-liste">{{ $employe->nom }}</h6>
-                            <p class="prenom-body-liste">{{ $employe->prenom }}</p>
+                            <h6 class="nom-body-liste"><?php echo e($employe->nom); ?></h6>
+                            <p class="prenom-body-liste"><?php echo e($employe->prenom); ?></p>
                         </td>
                         <td class="element-body-liste">
-                            <a href="mailto:{{ $employe->email }}">{{ $employe->email }}</a>
+                            <a href="mailto:<?php echo e($employe->email); ?>"><?php echo e($employe->email); ?></a>
                         </td>
-                        <td class="element-body-liste">{{ $employe->date_embauche }}</td>
-                        <td class="element-body-liste">{{ $employe->matricule }}</td>
-                        <td class="element-body-liste">{{ $employe->departements->departement }}</td>
-                        <td class="element-body-liste">{{ $employe->postes->poste }}</td>
+                        <td class="element-body-liste"><?php echo e($employe->date_embauche); ?></td>
+                        <td class="element-body-liste"><?php echo e($employe->matricule); ?></td>
+                        <td class="element-body-liste"><?php echo e($employe->departements->departement); ?></td>
+                        <td class="element-body-liste"><?php echo e($employe->postes->poste); ?></td>
                         <td class="element-body-liste">
-                            <a href="{{ route('employe.edit', $employe->id) }}" class="element-liste-edit">
+                            <a href="<?php echo e(route('employe.edit', $employe->id)); ?>" class="element-liste-edit">
                                 <i class="fi fi-sr-pen-field text-xl text-emerald-400"></i>
                             </a>
-                            <button type="button" data-id="{{ $employe->id }}" class="element-liste-delete" data-url="{{ route('employe.destroy', $employe->id) }}" >
+                            <button type="button" data-id="<?php echo e($employe->id); ?>" class="element-liste-delete" data-url="<?php echo e(route('employe.destroy', $employe->id)); ?>" >
                                 <i class="fi fi-sr-comment-xmark text-xl text-red-500"></i>
                             </button>
                         </td>
                     </tr>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         </div>
@@ -115,8 +115,8 @@
         <h2 class="alert-suppression-employe"><i class=""></i> Supprimer un employé</h2>
         <p class="context-suppression-employe">Vous voulez supprimer un employé dans votre base de données, cette action est definitive c'est-à-dire que la suppression d'un employé soit irrécupérable. </p>
         <form action="" method="POST" id="element-personnalise-abolition">
-            @csrf
-            @method('DELETE')
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('DELETE'); ?>
             <input type="submit" value="Suppression definitive" id="element-liste-delete">                   
         <div class="icon-sortie">
             <i class="fi fi-rr-circle-xmark" style="position:absolute;top:15px;right:15px;cursor:pointer;" id="quit"></i>
@@ -147,4 +147,5 @@
 
         
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('index.layouts', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\wamp64\www\rhm\resources\views/employe/listeEmploye.blade.php ENDPATH**/ ?>

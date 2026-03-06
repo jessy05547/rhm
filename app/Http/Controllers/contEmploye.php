@@ -7,7 +7,9 @@ use Sopamo\LaravelFilepond\Filepond;
 use App\Models\employe;
 use App\Models\departement;
 use App\Models\poste;
+use App\Models\presence;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 class contEmploye extends Controller
 {
     public function index()
@@ -45,42 +47,79 @@ class contEmploye extends Controller
             
         return view('employe.listeEmploye', ['employes' => $employes, 'departements' => $departements]);
     }
-    public function store(Request $request, Filepond $filepond){
-        $userId = session('utilisateur_id'); // Récupérer l'ID de l'utilisateur connecté
+    public function store(Request $request) 
+    {
+        $userId = session('utilisateur_id');
         if (!$userId) {
-            return redirect()->route('login')->with('error', 'Vous devez être connecté pour ajouter un employé.');
+            return redirect()->route('login')->with('error', 'Vous devez être connecté.');
         }
 
         try {
-                // $employe = employe::findOrFail($id);
-                $cinValde = str_replace(' ', '', $request->input('cin'));
-                $request->merge(['cin' => $cinValde]);
-                $data = $request->validate([
-                    'nom' => 'required|string|max:255',
-                    'prenom' => 'required|string|max:255',
-                    'cin' => 'required|digits:12|unique:employe_tables,cin',
-                    'adresse' => 'required|string|max:255',
-                    'email' => 'required|email|max:255|unique:employe_tables,email',
-                    'id_poste' => 'required|integer|exists:poste_tables,id',
-                    'id_departement' => 'required|integer|exists:departement_tables,id',
-                    'date_embauche' => 'required|date',
-                    'date_naissance' => 'required|date',
-                    'telephone' => 'required|string|max:20',
-                    'sexe' => 'required|string|in:Masculin,Féminin'
-                ]);
-                $data['id_utilisateur'] = $userId;
+            // Nettoyage et validation
+            $cinValide = str_replace(' ', '', $request->input('cin'));
+            $request->merge(['cin' => $cinValide]);
 
-            $employe = employe::create($data);
-            if($request->has('photo') && !empty($request->input('photo'))){
-                $path = $filepond->getPathFromServerId($request->input('photo'));
-                if($path && file_exists($path)){
-                    $employe->addMedia($path)->toMediaCollection('photos');
+            $data = $request->validate([
+                'nom' => 'required|string|max:255',
+                'prenom' => 'required|string|max:255',
+                'cin' => 'required|digits:12|unique:employe_tables,cin',
+                'adresse' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:employe_tables,email',
+                'id_poste' => 'required|integer|exists:poste_tables,id',
+                'id_departement' => 'required|integer|exists:departement_tables,id',
+                'date_embauche' => 'required|date',
+                'date_naissance' => 'required|date',
+                'telephone' => 'required|string|max:20',
+                'sexe' => 'required|string|in:Masculin,Féminin'
+            ]);
+
+            $data['id_utilisateur'] = $userId;
+            $employe = Employe::create($data); // Attention à la majuscule sur le modèle Employe
+
+            // LOGIQUE MEDIA LIBRARY
+            // 'photo' correspond à la valeur retournée par le serveur lors du processus d'upload
+            if ($request->filled('photo')) {
+                $tempPath = storage_path('app/public/' . $request->input('photo'));
+
+                if (file_exists($tempPath)) {
+                    $employe->addMedia($tempPath)
+                            ->toMediaCollection('photos');
+                    // Media Library déplace le fichier, donc le dossier temporaire sera vide
                 }
             }
+
             return redirect()->route('employe.listeEmploye')->with('success', 'Employé créé avec succès.');
+
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'vous avez de quelque problème : ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Un problème est survenu : ' . $e->getMessage());
         }
+    }
+    // FilePondUploadController.php
+    public function process(Request $request)
+    {
+        // 'photo' doit correspondre au name de votre input FilePond
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            
+            // On stocke dans storage/app/public/temp
+            $path = $file->store('temp', 'public');
+
+            // On retourne le chemin relatif que FilePond va stocker 
+            // dans le champ caché 'photo' de votre formulaire principal
+            return $path; 
+        }
+
+        return response()->json(['error' => 'Fichier introuvable'], 400);
+    }
+
+    public function revert(Request $request)
+    {
+        // Logique pour supprimer le fichier si l'utilisateur clique sur "Annuler"
+        $path = $request->getContent();
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+        return response()->noContent();
     }
     public function destroy($id){
         $employe = employe::findOrFail($id);
@@ -120,6 +159,15 @@ class contEmploye extends Controller
         ]);
 
         $employe->update($data);
+        if ($request->filled('photo')) {
+                $tempPath = storage_path('app/public/' . $request->input('photo'));
+
+                if (file_exists($tempPath)) {
+                    $employe->addMedia($tempPath)
+                            ->toMediaCollection('photos');
+                    // Media Library déplace le fichier, donc le dossier temporaire sera vide
+                }
+            }
         return redirect()->route('employe.listeEmploye')->with('success', 'Employé mis à jour avec succès.');
     }
     public function searchEmploye(Request $request){
@@ -133,5 +181,32 @@ class contEmploye extends Controller
 
         return view('employe.search', compact('employes', 'query'));
     }
-    
+    // calcul heure supplementaire
+    public function heureSupplementaire($employeId){
+        $presences = presence::where('id_employe', $employeId)->get();
+        $stat = $presences->groupBy('date_pointage')->map(function ($group) {
+            $normal = 8;
+
+            $heuresTravaillees = $group->sum(function ($presence) {
+                return $presence->check_out->diffInHours($presence->check_in);
+            });
+            $heuresSupp = max(0, $heuresTravaillees - $normal);
+            return [
+                'date' => $group->first()->date_pointage,
+                'heures_travaillees' => $heuresTravaillees,
+                'heures_supplementaires' => $heuresSupp
+            ];
+        });
+        $salaire = employe::find($employeId)->postes->salaire;
+        $tauxSupp = $salaire / 180; // Supposons que 160 heures de travail par mois
+        $totalSupp = $stat->sum('heures_supplementaires');
+        $coutSupp = $totalSupp * $tauxSupp;
+        return [
+            'stat' => $stat,
+            'salaire' => $salaire,
+            'tauxSupp' => $tauxSupp,
+            'totalSupp' => $totalSupp,
+            'coutSupp' => $coutSupp
+        ];
+    }
 }
