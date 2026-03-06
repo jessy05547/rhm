@@ -1,0 +1,221 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.success-message{
+    width: 300px;
+    height: 50px;
+    background: #2ba0074f;
+    color: #e4dddd;
+    font-weight: 600;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.login-parent{
+    width: 100%;
+    height: 100vh;
+    background: url('../images/log.jpg');
+    padding: 20px;
+    background-repeat:no-repeat;
+    position:relative;
+    overflow-x:hidden;
+    background-size:cover;
+}
+.login-parent #user-login{
+    width: 40%;
+    height: 90vh;
+    background: #1b1b1b7c;
+    border-radius: 12px;
+    padding-top: 30px;
+    position: relative;
+    box-shadow: 0 0 30px 15px  #2f3131;
+}
+.login-parent #user-login .user-login-title{
+    text-align: center;
+    font-size: 2em;
+    color: #0f9cfa9d;
+    margin-bottom: 50px;
+    font-family:'roboto';
+}
+.login-parent #user-login .user-login-ground{
+    width: 100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.login-parent #user-login .user-login-ground .login-group{
+    width: 100%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
+    padding: 0 30px;
+}
+.login-parent #user-login .user-login-ground .login-lab{
+    font-size: 16px;
+    color: #ffffff;
+    font-family: 'roboto';
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.login-parent #user-login .user-login-ground #login-input{
+    width: 400px;
+    height: 40px;
+    border-radius: 12px;
+    outline: none;
+    border:none;
+    background: #00000062;
+    font-size: 18px;
+    margin-bottom: 18px;
+    padding-left: 10px;
+    color: #ffffffbe;
+}
+.login-parent #user-login .user-login-ground .login-validate{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.login-parent #user-login .user-login-ground .login-validate #login-validate-btn{
+    width: 300px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: #0770a0;
+    color: #e4dddd;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .8s ease-out;
+    margin-bottom: 20px;
+}
+.login-parent #user-login .user-login-ground .login-validate #login-validate-btn:hover{
+    background: #15a1e2;
+}
+.login-parent #user-login .user-login-ground .login-validate .register-user{
+    width: 300px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: #2f3131;
+    color: #e4dddd;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .8s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.login-parent #user-login .user-login-ground .login-validate .register-user:hover{
+    background: #575858;
+}
+.login-parent #user-form-register{
+    width: 100%;
+    height: auto;
+    background: #0000009f;
+    border-radius: 12px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 0 30px 15px  #1195b69c;
+}
+.login-parent #user-form-register .user-login-title{
+    text-align: center;
+    font-size: 2em;
+    color: #0f9cfae1;
+    margin-bottom: 50px;
+    font-family:'roboto';
+}
+.login-parent #user-form-register .register-parent-group{
+    width: 100%;
+    height:100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+.login-parent #user-form-register .register-parent-group .register-parent{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 30px;
+}
+.login-parent #user-form-register .register-parent-group .register-lab{
+    font-size: 16px;
+    color: #0770a0;
+    font-family: 'roboto';
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.login-parent #user-form-register .register-parent-group #register-input, #register-input-naissance, #register-input-password, #register-input-confirmation, #emp-input-cont-embauche{
+    width: 400px;
+    height: 40px;
+    border-radius: 12px;
+    outline: none;
+    border:none;
+    background: #00000062;
+    font-size: 18px;
+    margin-bottom: 18px;
+    padding-left: 10px;
+    color: #ffffffbe;
+}
+.login-parent #user-form-register .register-parent-group #register-input #option-register{
+    background: #00000062;
+    color: #ffffffbe;
+}
+.login-parent #user-form-register .register-parent-group .register-sexe-group{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.login-parent #user-form-register .register-parent-group .register-sexe-lab{
+    color: #0770a0;
+}
+.login-parent #user-form-register .register-parent-group .register-sexe-group input[type="radio"]{
+    width: 20px;
+    height: 20px;
+    accent-color: #0770a0;
+}
+.login-parent #user-form-register .register-parent-group .register-validate{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.login-parent #user-form-register .register-parent-group .register-validate #register-validate-btn{
+    width: 300px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: #0770a0;
+    color: #e4dddd;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .8s ease-out;
+    margin-bottom: 20px;
+}
+.login-parent #user-form-register .register-parent-group .register-validate #register-validate-btn:hover{
+    background: #15a1e2;
+}
+.login-parent #user-form-register .register-parent-group .register-validate .register-user{
+    width: 300px;
+    height: 40px;
+    border: none;
+    border-radius: 12px;
+    background: #2f3131;
+    color: #e4dddd;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .8s ease;
+    text-align: center;
+    text-decoration: none;
+}
+.login-parent #user-form-register .register-parent-group .register-validate .register-user:hover{
+    background: #575858;
+}
