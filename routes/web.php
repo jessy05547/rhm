@@ -52,6 +52,7 @@ Route::prefix('authentification')->group(function () {
     Route::post('/register', [contUtilisateur::class, 'store'])->name('authentification.store');
     Route::post('/user', [contUtilisateur::class, 'login'])->name('user.login');
     Route::get('/logout', [contUtilisateur::class, 'logout'])->name('user.logout');
+    
 });
 Route::prefix('conge')->group(function(){
     Route::get('/congeAjout', [contConge::class, 'conge'])->name('conge.demandeConge');
@@ -60,5 +61,16 @@ Route::prefix('conge')->group(function(){
 });
 Route::prefix('index')->group(function(){
     Route::get('/dashboardApp', [dashboardApp::class, 'dashboard'])->name('index.dashboard');
-    // Route::get('/layout', [dashboardApp::class, 'searchPresence'])->name('index.search');
+    Route::get('/layout', [pointage::class, 'presentsEntreDeuxDates'])->name('deux.date');
+    Route::get('/edit', [contUtilisateur::class, 'editUtilisateur'])->name('edit.utilisateur');
+    Route::put('/edit', [contUtilisateur::class, 'updateUtilisateur'])->name('user.edit');
+    
+});
+Route::get('index/pdf/{id}', [dashboardApp::class, 'pdf'])->name('employe.pdf');
+Route::fallback(function () {
+     $userId = session('utilisateur_id');
+        if ($userId) {
+            return redirect()->route('index.dashboard');
+        }
+        return redirect()->route('login');
 });

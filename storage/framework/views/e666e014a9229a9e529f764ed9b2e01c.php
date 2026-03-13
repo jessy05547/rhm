@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/style.css', 'resources/js/app.js','resources/js/chunking.js','resources/js/controlChamp.js','resources/js/graphe.js']); ?>
+    <link rel="shortcut icon" href="<?php echo e(asset('imgs/logo.png')); ?>" type="image/x-icon">
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/style.css', 'resources/js/app.js','resources/js/chunking.js','resources/js/controlChamp.js','resources/js/graphe.js','resources/css/responsive.css', 'resources/js/conge.js']); ?>
     <title><?php echo $__env->yieldContent('title'); ?></title>
 </head>
 <body>
@@ -12,15 +13,25 @@
         <div class="dashboard-profil">
             <div class="profil-search">
                 <form action="<?php echo e(route('presence.recherche')); ?>" method="get" id="src-profil">
-                    <input type="text" name="search" id="search" placeholder="Est-ce que je suis présent ?">
+                    <input type="text" name="search" id="search" placeholder="Est-ce que je suis présent ?" >
                 </form>
-                <form action="" method="get">
-                
+                <form action="<?php echo e(route('deux.date')); ?>" method="get" id="entreDeuxDate" >
+                    <input type="date" name="date_debut" id="dateRequete">
+                    <input type="date" name="date_fin" id="dateRequete1">
                 </form>
+                <p id="combo"><i class="fi fi-ss-replace text-amber-50"></i></p>
             </div>
             <div class="all-profil">
                 <div class="profil-image">
-                    <img src="" alt="" id="user-image">
+                    <?php if($profil->hasMedia('photos')): ?>
+                        <img src="<?php echo e($profil->getFirstMediaUrl('photos')); ?>" 
+                            alt="Photo de profil"
+                            class="rounded-full w-12 h-12 object-cover">
+                    <?php else: ?>
+                        <img src="<?php echo e(asset('images/default-avatar.png')); ?>" 
+                            alt="Avatar par défaut"
+                            class="rounded-full w-12 h-12 object-cover">
+                    <?php endif; ?>
                 </div>
                 <div class="profil-name">
                     <h5 class="profil-name-user"><?php echo e(session('utilisateur_nom')); ?></h5>
@@ -53,22 +64,29 @@
                 </nav>
                 <div class="btn-logout">
                     <ul id="logout-layout">
+                        <li id="theme">
+                            <a  href="<?php echo e(route('edit.utilisateur')); ?>" id="sombre">
+                                <i class="fi fi-ss-users text-amber-50 text-xl"></i>
+                            </a>
+                            <!-- <button id="clair">
+                                <i class="fi fi-ss-moon-stars text-xl" style="display: none;color:#fca302;"></i>
+                            </button> -->
+                        </li>
                         <li><a href="<?php echo e(route('user.logout')); ?>"><i class="fi fi-ss-exit text-amber-50 text-xl"></i></a></li>
                     </ul>
                 </div>
             </div>
-            
         </div>
         <div class="dashboard-body">
             <div class="wrapper">
                 <?php if(session('error')): ?>
-                    <div class="error-message" style="width:300px;height: auto;color: #d32f2f; margin-bottom: 10px;background: #f0f0f06e; padding: 10px; border-radius: 5px;display: flex;justify-content:center;font-weight: 500;align-items:center;gap:10px;"><i class="fi fi-ss-braker-warning" style="color:#d32f2f;"></i>
+                    <div class="error-message" style="width:300px;height: auto;color: #d32f2f; margin-bottom: 10px;background: #f0f0f06e; padding: 10px; border-radius: 5px;display: flex;justify-content:center;font-weight: 500;align-items:center;gap:10px;position:absolute;top:0%;"><i class="fi fi-ss-braker-warning" style="color:#d32f2f;"></i>
                         <?php echo e(session('error')); ?>
 
                     </div>
                 <?php endif; ?>
                 <?php if(session('success')): ?>
-                    <div class="success-message" style="color: #2fd345;margin-bottom: 10px;background: #f0f0f06e; padding: 10px; border-radius: 5px;display: flex;justify-content:center;width:300px;height: 5vh;font-weight: 500;align-items:center;gap:10px;"><i class="fi fi-rr-check" style="color:#2fd345;"></i>
+                    <div class="success-message" style="color: #2fd345;margin-bottom: 10px;background: #f0f0f06e; padding: 10px; border-radius: 5px;display: flex;justify-content:center;width:300px;height: 5vh;font-weight: 500;align-items:center;gap:10px; position:absolute;top:0%;"><i class="fi fi-rr-check" style="color:#2fd345;"></i>
                         <?php echo e(session('success')); ?>
 
                     </div>
@@ -78,6 +96,59 @@
         </div>
     </header>
     <script>
+        const bouton = document.getElementById('combo');
+        const presenceBtn = document.getElementById('search');
+        const deuxDate = document.getElementById('entreDeuxDate')
+        const inputDebut = document.getElementById('dateRequete');
+        const inputFin = document.getElementById('dateRequete1');
+        const [year, moth, day] = inputDebut.value.split("-");
+        const [y, m, d] = inputFin.value.split("-");
+        const debut = new Date(year, moth - 1, day);
+        const fin = new Date(y, m - 1, d);
+        /*const btn = document.getElementById('theme');
+
+        const conteneur = document.querySelector('.dashboard-body')
+        const iconSombre = document.getElementById('sombre');
+        const iconClair = document.getElementById('clair');*/
+
+        btn.addEventListener('click', () => {
+            if (conteneur.classList.contains('parent-clair')) {
+                // Passer au mode SOMBRE
+                conteneur.classList.replace('parent-clair', 'dashboard-body');
+                // iconSombre.style.display = 'none';   // Cache la lune
+                iconClair.style.display = 'inline';  // Montre le soleil
+            } else {
+                // Passer au mode CLAIR
+                conteneur.classList.replace('dashboard-body', 'parent-clair');
+                iconSombre.style.display = 'inline'; // Montre la lune
+                iconClair.style.display = 'none';   // Cache le soleil
+            }
+        });
+
+        inputFin.addEventListener('input', () => {
+            if(fin.getDate() < debut.getDate()){
+                inputDebut.style.borderColor = 'red';
+                inputFin.style.borderColor = 'red';
+                inputFin.value = "";
+            }else{
+                inputDebut.style.borderColor = 'green';
+                inputFin.style.borderColor = 'green';
+            }
+        });
+
+        bouton.addEventListener('click', () => {
+            if (presenceBtn.style.display === 'none') {
+                presenceBtn.style.display = 'block';
+                deuxDate.style.display = 'none';
+                bouton.style.left = '26%';
+                presenceBtn.style.animation = ""
+            } else {
+                presenceBtn.style.display = 'none';
+                deuxDate.style.display = 'block';
+                bouton.style.left = '50%';
+            }
+        });
+
         const progressBar = document.createElement('div');
         progressBar.id = 'top-progress-bar';
         document.body.prepend(progressBar);

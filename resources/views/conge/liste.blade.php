@@ -2,15 +2,19 @@
 @section('title', 'Liste de demande de conge - Employé')
 @section('content')
     <section class="conge-liste-parent">
+        <h2 style="color:#0e49c7; font-size:14px; font-weight:600;
+            margin-bottom:25px;">Prendre une congé</h2>  
         <div class="bouton-autre-option">
             <a href="{{ route('conge.demandeConge') }}" class="ajouter-demande-conge">
                 <i class="fi fi-sr-add" style="color:#01252c;"></i>
-                <span class="btn-autre-option">
+                <span class="btn-autre-option" >
                     Demande de congé
                 </span>    
             </a>
         </div>
         <div class="tableau-border-conge">
+            <h2 style="color:#0e49c7; font-size:14px; font-weight:600;
+            margin-bottom:25px;">Liste des demandes de congés</h2>  
             <table class="table-conge-externe">
                 <thead class="header-table-conge">
                     <tr class="tr-conge-head">

@@ -100,4 +100,25 @@ class pointage extends Controller
             return view('presence.recherche', compact('presences','searchTerm'));
         // return view('presence.recherche', ['presences' => $presences, 'searchTerm' => $searchTerm]);
     }
+    
+
+public function presentsEntreDeuxDates(Request $request) {
+    // On définit les dates (par exemple via le formulaire ou par défaut)
+    $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+    $dateFin = $request->input('date_fin', now()->endOfMonth()->format('Y-m-d'));
+    $userSession = session('utilisateur_id');
+
+    // Requête pour obtenir les employés uniques présents entre ces deux dates
+    $presents = employe::where('id_utilisateur', $userSession)
+        ->whereHas('presences', function($query) use ($dateDebut, $dateFin) {
+            $query->whereBetween('date_pointage', [$dateDebut, $dateFin]);
+        })
+        ->with(['presences' => function($query) use ($dateDebut, $dateFin) {
+            // Optionnel : on ne charge que les présences de cette période
+            $query->whereBetween('date_pointage', [$dateDebut, $dateFin]);
+        }])
+        ->get();
+
+    return view('presence.recherche', compact('presents', 'dateDebut', 'dateFin'));
+}
 }

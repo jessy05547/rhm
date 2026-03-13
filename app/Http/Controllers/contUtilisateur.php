@@ -108,11 +108,90 @@ class contUtilisateur extends Controller
         $request->session()->put('utilisateur_prenom', $utilisateur->prenom);
         $request->session()->put('utilisateur_poste', $utilisateur->id_poste);
 
+        $profil = $utilisateur->getFirstMediaUrl('photos');
         return redirect()->route('index.dashboard')->with('success', 'Connexion réussite');
     }
     public function logout(Request $request){
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('login')->with('success', 'Déconnexion réussite');
+    }
+    public function editUtilisateur(Request $request){
+    $userId = $request->session()->get('utilisateur_id');
+
+    if (!$userId) {
+        return redirect()->route('login')->with('error', 'Veuillez vous connecter.');
+    }
+
+    $utilisateur = utilisateur::with(['postes', 'departements'])->findOrFail($userId);
+    $postes      = poste::all();
+    $deps        = departement::all();
+
+    return view('index.edit', [
+        'utilisateur'  => $utilisateur,
+        'postes'       => $postes,
+        'deps' => $deps,
+    ]);
+    }
+    public function updateUtilisateur(Request $request)
+    {
+        $userId = $request->session()->get('utilisateur_id');
+
+        if (!$userId) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter.');
+        }
+
+        $utilisateur = utilisateur::findOrFail($userId);
+
+        $rules = [
+            'nom'            => 'required|string|max:255',
+            'prenom'         => 'required|string|max:255',
+            'cin'            => 'required|digits:12|unique:utilisateur_tables,cin,' . $userId,
+            'adresse'        => 'required|string|max:255',
+            'email'          => 'required|email|max:255|unique:utilisateur_tables,email,' . $userId,
+            'id_poste'       => 'required|integer|exists:poste_tables,id',
+            'id_departement' => 'required|integer|exists:departement_tables,id',
+            'date_embauche'  => 'required|date',
+            'date_naissance' => 'required|date',
+            'telephone'      => 'required|string|max:20',
+            'sexe'           => 'required|string|in:Masculin,Féminin',
+            'photo'          => 'nullable|string',
+        ];
+
+        // Mot de passe optionnel à la mise à jour
+        if ($request->filled('password')) {
+            $rules['password'] = 'string|min:8|confirmed';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Mettre à jour le mot de passe seulement s'il est fourni
+        if ($request->filled('password')) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $utilisateur->update($validated);
+
+        // Mise à jour de la photo via FilePond + Spatie Media Library
+        if ($request->filled('photo')) {
+            $tempPath = storage_path('app/public/' . $request->input('photo'));
+
+            if (file_exists($tempPath)) {
+                // clearMediaCollection supprime l'ancienne photo (singleFile)
+                $utilisateur->clearMediaCollection('photos');
+                $utilisateur->addMedia($tempPath)
+                            ->toMediaCollection('photos');
+            }
+        }
+
+        // Rafraîchir les données de session
+        $request->session()->put('utilisateur_nom',    $utilisateur->nom);
+        $request->session()->put('utilisateur_prenom', $utilisateur->prenom);
+        $request->session()->put('utilisateur_email',  $utilisateur->email);
+        $request->session()->put('utilisateur_poste',  $utilisateur->id_poste);
+
+        return redirect()->route('index.dashboard')->with('success', 'Profil mis à jour avec succès.');
     }
 }

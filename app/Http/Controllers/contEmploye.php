@@ -10,6 +10,7 @@ use App\Models\poste;
 use App\Models\presence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\utilisateur;
 class contEmploye extends Controller
 {
     public function index()
@@ -18,7 +19,6 @@ class contEmploye extends Controller
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour ajouter un employé.');
         }
-
         $post = poste::all();
         $deps = departement::all();
         return view('employe.createEmploye',[
@@ -32,14 +32,14 @@ class contEmploye extends Controller
          if (!$userSession) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour ajouter un employé.');
         }
-        
-        $departements = departement::withCount('employee')->paginate(5);
+        $departements = departement::withCount(['employee' => function ($query) use ($userSession) {
+    $query->where('id_utilisateur', $userSession);
+    }])->paginate(5);
         
         $totalEmployes = employe::where('id_utilisateur', $userSession)->count();
         $departements->each(function ($deps) use ($totalEmployes){
             $deps->pourcentage = $totalEmployes > 0 ? ($deps->employee_count / $totalEmployes) * 100 : 0;
         });
-
         $employes = employe::with('postes','departements')
             ->where('id_utilisateur',$userSession)
             ->latest()
@@ -53,12 +53,10 @@ class contEmploye extends Controller
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté.');
         }
-
         try {
             // Nettoyage et validation
             $cinValide = str_replace(' ', '', $request->input('cin'));
             $request->merge(['cin' => $cinValide]);
-
             $data = $request->validate([
                 'nom' => 'required|string|max:255',
                 'prenom' => 'required|string|max:255',
@@ -72,10 +70,8 @@ class contEmploye extends Controller
                 'telephone' => 'required|string|max:20',
                 'sexe' => 'required|string|in:Masculin,Féminin'
             ]);
-
             $data['id_utilisateur'] = $userId;
             $employe = Employe::create($data); // Attention à la majuscule sur le modèle Employe
-
             // LOGIQUE MEDIA LIBRARY
             // 'photo' correspond à la valeur retournée par le serveur lors du processus d'upload
             if ($request->filled('photo')) {
@@ -87,7 +83,6 @@ class contEmploye extends Controller
                     // Media Library déplace le fichier, donc le dossier temporaire sera vide
                 }
             }
-
             return redirect()->route('employe.listeEmploye')->with('success', 'Employé créé avec succès.');
 
         } catch (\Exception $e) {
@@ -100,7 +95,6 @@ class contEmploye extends Controller
         // 'photo' doit correspondre au name de votre input FilePond
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            
             // On stocke dans storage/app/public/temp
             $path = $file->store('temp', 'public');
 
@@ -134,15 +128,11 @@ class contEmploye extends Controller
         return view('employe.editEmploye', ['employe' => $employe, 'postes' => $post, 'departements' => $deps]);
     }
     public function update(Request $request, $id){
-         $userId = session('utilisateur_id'); // Récupérer l'ID de l'utilisateur connecté
+         $userId = session('utilisateur_id'); 
         if (!$userId) {
             return redirect()->route('login')->with('error', value: 'Vous devez être connecté pour ajouter un employé.');
         }
-
         $employe = employe::findOrFail($id);
-        // $cinValde = str_replace(' ', '', $request->input('cin'));
-        // $request->merge(['cin' => $cinValde]);
-
         $data = $request->validate([
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
@@ -159,16 +149,17 @@ class contEmploye extends Controller
         ]);
 
         $employe->update($data);
-        if ($request->filled('photo')) {
-                $tempPath = storage_path('app/public/' . $request->input('photo'));
+       if ($request->filled('photo')) {
+            $tempPath = storage_path('app/public/' . $request->input('photo'));
 
-                if (file_exists($tempPath)) {
-                    $employe->addMedia($tempPath)
+            if (file_exists($tempPath)) {
+                // clearMediaCollection supprime l'ancienne photo (singleFile)
+                $employe->clearMediaCollection('photos');
+                $employe->addMedia($tempPath)
                             ->toMediaCollection('photos');
-                    // Media Library déplace le fichier, donc le dossier temporaire sera vide
-                }
             }
         return redirect()->route('employe.listeEmploye')->with('success', 'Employé mis à jour avec succès.');
+    }
     }
     public function searchEmploye(Request $request){
         $query = $request->input('query');
@@ -182,31 +173,56 @@ class contEmploye extends Controller
         return view('employe.search', compact('employes', 'query'));
     }
     // calcul heure supplementaire
-    public function heureSupplementaire($employeId){
-        $presences = presence::where('id_employe', $employeId)->get();
-        $stat = $presences->groupBy('date_pointage')->map(function ($group) {
-            $normal = 8;
+    public function heureSupplementaire($employeId)
+{
+    // 1. Récupérer les présences (avec un filtre de date serait mieux, ex: mois en cours)
+    $presences = Presence::where('id_employe', $employeId)
+        ->whereNotNull('check_out') // Sécurité : on ne calcule que si le gars est sorti
+        ->get();
 
-            $heuresTravaillees = $group->sum(function ($presence) {
-                return $presence->check_out->diffInHours($presence->check_in);
-            });
-            $heuresSupp = max(0, $heuresTravaillees - $normal);
-            return [
-                'date' => $group->first()->date_pointage,
-                'heures_travaillees' => $heuresTravaillees,
-                'heures_supplementaires' => $heuresSupp
-            ];
+    $stat = $presences->groupBy(function($item) {
+        // On groupe par date brute pour être sûr
+        return \Carbon\Carbon::parse($item->date_pointage)->format('Y-m-d');
+    })->map(function ($group) {
+        $heureNormaleQuotidienne = 8;
+
+        $minutesTravaillees = $group->sum(function ($presence) {
+            // Calcul précis en minutes pour ne pas perdre les demi-heures
+            return $presence->check_out->diffInMinutes($presence->check_in);
         });
-        $salaire = employe::find($employeId)->postes->salaire;
-        $tauxSupp = $salaire / 180; // Supposons que 160 heures de travail par mois
-        $totalSupp = $stat->sum('heures_supplementaires');
-        $coutSupp = $totalSupp * $tauxSupp;
+
+        $heuresTravaillees = $minutesTravaillees / 60;
+        $heuresSupp = max(0, $heuresTravaillees - $heureNormaleQuotidienne);
+
         return [
-            'stat' => $stat,
-            'salaire' => $salaire,
-            'tauxSupp' => $tauxSupp,
-            'totalSupp' => $totalSupp,
-            'coutSupp' => $coutSupp
+            'date' => $group->first()->date_pointage,
+            'heures_travaillees' => round($heuresTravaillees, 2),
+            'heures_supplementaires' => round($heuresSupp, 2)
         ];
-    }
+    });
+
+    // 2. Récupérer l'employé avec son salaire
+    $employe = Employe::with('postes')->findOrFail($employeId);
+    $salaireBase = $employe->salaire_base; // Utilise la colonne de ton choix
+    
+    // Taux horaire (ex: salaire / 173.33)
+    $tauxHoraire = $salaireBase / 173.33; 
+    
+    // Total des heures sup sur la période
+    $totalHeuresSupp = $stat->sum('heures_supplementaires');
+    
+    // Coût total (on peut imaginer une majoration de 25% ici)
+    $majoration = 1.25; 
+    $coutHeuresSupp = $totalHeuresSupp * ($tauxHoraire * $majoration);
+
+    return view('employe.pdf', [
+        'employe' => $employe,
+        'stat' => $stat,
+        'salaire' => $salaireBase,
+        'totalSupp' => $totalHeuresSupp,
+        'coutSupp' => $coutHeuresSupp,
+        'tauxSupp' => $tauxHoraire * $majoration
+    ]);
+}
+    
 }

@@ -39,5 +39,8 @@ class employe extends Model implements HasMedia
     public function departements(){
         return $this->belongsTo(departement::class, 'id_departement');
     }
-    
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('photos');
+    }
 }

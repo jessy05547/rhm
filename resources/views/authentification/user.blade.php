@@ -11,18 +11,19 @@
             {{ session('success') }}
         </div>
     @endif
+    <div class="blur-login"></div>
     <header class="login-parent">
         <form action="{{ route('user.login') }}" method="POST" id="user-login">
             @csrf
             <h3 class="user-login-title">Authentification</h3>
             <div class="user-login-ground">
                 <div class="login-group">
-                    <label for="email" class="login-lab">E-mail *</label>
-                    <input type="email" name="email" id="login-input" required>
+                    <!-- <label for="email" class="login-lab">E-mail *</label> -->
+                    <input type="email" name="email" id="login-input" required placeholder="votre.email@gmail.com">
                 </div>
                 <div class="login-group">
-                    <label for="password" class="login-lab">Mot de passe *</label>
-                    <input type="password" name="password" required id="login-input">
+                    <!-- <label for="password" class="login-lab">Mot de passe *</label> -->
+                    <input type="password" name="password" required id="login-input" placeholder="Mot de passe">
                 </div>
                 <div class="login-validate">
                     <input type="submit" value="Se connecter" id="login-validate-btn">
@@ -30,6 +31,9 @@
                 </div>
             </div>
         </form>
+        <!-- <div class="login-text-script">
+            <h2 class="text-user-login">gestion des ressources humains</h2>
+        </div> -->
     </header>
     <script>
         try{

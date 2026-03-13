@@ -1,0 +1,62 @@
+@media screen and (max-width: 1370px) {
+    .dashboard-parent-ctx .dashboard-poste-depense{
+        width:600px;
+        height:150px;
+        top:34%;
+    }
+    .dashboard-parent-ctx .ctx-partition-top{
+        top:10%;
+    }
+    .dashboard-parent-ctx .statistique{
+        font-size: 12px;
+        top:4%;
+    }
+    .dashboard-parent-ctx .bar-depense{
+        font-size: 12px;
+        top:28%;
+    }
+    .dashboard-parent-ctx .dashboard-parent{
+        width:500px;
+        height: 230px;
+        top:12%;
+    }
+    .dashboard-parent-ctx .dashboard-pagination .dashboard-pagination-title{
+        font-size:12px;
+        top:57%;
+    }
+    .dashboard-parent-ctx .dashboard-pagination .dashboard-table-employe .dashboard-thead-employe{
+        width:100%;
+        height: 30px;
+    }
+    .dashboard-parent-ctx .dashboard-pagination .dashboard-table-employe{
+        margin-top:30%;
+    }
+    .dashboard-parent-ctx .dashboard-pagination .dashboard-table-employe .dashboard-thead-employe .dashboard-tr-employe .dashboard-th-employe{
+        font-size: 12px;
+    }
+    .dashboard-parent-ctx .dashboard-pagination .dashboard-table-employe .dashboard-tbody-employe .dashboard-tro-employe{
+        width:100%;
+        height:30px;
+        position:relative;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        border-radius:0%;
+    }
+    .dashboard-parent-ctx .dashboard-pagination .dashboard-table-employe .dashboard-tbody-employe .dashboard-tro-employe .dashboard-td-employe{
+        width:100%;
+        height:35px;
+        font-size: 12px;
+        position:relative;
+        text-align: left;
+        padding-top: 10px;
+
+    }
+    .dashboard-parent-ctx .title-ctx-init{
+        font-size:12px;
+        margin-top: 10px;
+    }
+    .dashboard-parent-ctx .ctx-partition-top .title-ctx .qte-employe{
+        font-size:12px;
+    }
+}

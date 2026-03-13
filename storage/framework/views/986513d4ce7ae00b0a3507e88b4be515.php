@@ -3,6 +3,8 @@
 <?php $__env->startSection('content'); ?>
     <section class="liste-employe-parent">
         <div class="card-total-employe">
+            <h2 style="color:#0e49c7; font-size:14px; font-weight:600;
+            margin-bottom:25px;">Nombre des travailleurs par département</h2>  
             <div class="card-one-employe">
                 <?php $__currentLoopData = $departements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $departement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="card-item-departement">
@@ -56,11 +58,14 @@
                 </a>
             </div>
         </div>
-        <div class="liste-employe-element">        
+        <div class="liste-employe-element">
+            <h2 style="color:#0e49c7; font-size:14px; font-weight:600;
+            margin-bottom:25px;margin-top:50px;z-index:-1;">Liste des employés actifs</h2>      
             <table class="table-liste-employe">
                 <thead class="head-liste-employe">
                     <tr class="child-liste-employe">
-                        <th class="element-liste-employe">PROFIL</th>
+                        <!-- <th class="element-liste-employe">PROFIL</th> -->
+                        <th class="element-liste-employe">Profil</th>
                         <th class="element-liste-employe">SEXE</th>
                         <th class="element-liste-employe">NOM</th>
                         <th class="element-liste-employe">EMAIL</th>
@@ -69,14 +74,15 @@
                         <th class="element-liste-employe">DEPARTEMENT</th>
                         <th class="element-liste-employe">POSTE</th>
                         <th class="element-liste-employe">ACTION</th>
+                        <th class="element-liste-employe">F.PAIE</th>
                     </tr>
                 </thead>
                 <tbody class="body-liste-employe">
                     <?php $__currentLoopData = $employes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $employe): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr class="child-body-employe">
-                        <td class="element-body-liste">
+                        <td class="element-body-liste" style="display:flex; justify-content:center;align-items:center;">
                             <?php if($employe->hasMedia('photos')): ?>
-                                <img src="<?php echo e($employe->getFirstMediaUrl('photos')); ?>" alt="Photo de <?php echo e($employe->nom); ?>" class="photo-employe-liste" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                                <img src="<?php echo e($employe->getFirstMediaUrl('photos')); ?>" alt="Photo de <?php echo e($employe->nom); ?>" class="photo-employe-liste" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%; margin:4px 0;">
                             <?php else: ?>
                                 <div class="photo-employe-placeholder">
                                     <i class="fi fi-rr-user" style="color:#01252c; display: flex;align-items:center;"></i>
@@ -102,6 +108,12 @@
                             <button type="button" data-id="<?php echo e($employe->id); ?>" class="element-liste-delete" data-url="<?php echo e(route('employe.destroy', $employe->id)); ?>" >
                                 <i class="fi fi-sr-comment-xmark text-xl text-red-500"></i>
                             </button>
+                            
+                        </td>
+                        <td>
+                            <a href="<?php echo e(route('employe.pdf', ['id' => $employe->id])); ?>" class="element-liste-pdf" target="_blank">
+                                <i class="fi fi-sr-file-pdf text-xl" style="color:#0e49c7;"></i>
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

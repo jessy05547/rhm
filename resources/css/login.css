@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 .success-message{
     width: 300px;
     height: 50px;
@@ -14,24 +15,69 @@
     left: 50%;
     transform: translateX(-50%);
 }
+.login-text-script{
+    width:600px;
+    height:auto;
+    position:absolute;
+    top:25%;
+    right: 5%;
+    /* background: linear-gradient(136deg, #0e49c7, rgb(79, 14, 199)); */
+
+}
+@keyframes modalApparition {
+    from{
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.login-text-script .text-user-login{
+    font-size:3rem;
+    text-transform: uppercase;
+    font-family: 'poppins';
+    color: #0e49c7;
+    animation: modalApparition 0.8s ease-out;
+}
 .login-parent{
     width: 100%;
     height: 100vh;
-    background: url('../images/log.jpg');
+    /* background: url('../images/log.jpg'); */
+    background: linear-gradient(230deg, rgb(1, 5, 14), #0e49c7);
     padding: 20px;
     background-repeat:no-repeat;
     position:relative;
     overflow-x:hidden;
     background-size:cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.blur-login{
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: all .8s ease;
+    z-index: -1;
+    filter: blur('10px');
+    background: #0f0f0f2d;
 }
 .login-parent #user-login{
     width: 40%;
-    height: 90vh;
-    background: #1b1b1b7c;
+    height: 70vh;
+    background:#1466c483;
     border-radius: 12px;
     padding-top: 30px;
     position: relative;
-    box-shadow: 0 0 30px 15px  #2f3131;
+    box-shadow: 0 0 15px 8px  #4374df;
+    z-index: 1;
 }
 .login-parent #user-login .user-login-title{
     text-align: center;
@@ -52,7 +98,10 @@
     /* height: 100%; */
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 0 30px;
+
 }
 .login-parent #user-login .user-login-ground .login-lab{
     font-size: 16px;
@@ -60,6 +109,7 @@
     font-family: 'roboto';
     font-weight: 600;
     margin-bottom: 8px;
+    
 }
 .login-parent #user-login .user-login-ground #login-input{
     width: 400px;
@@ -68,7 +118,7 @@
     outline: none;
     border:none;
     background: #00000062;
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 18px;
     padding-left: 10px;
     color: #ffffffbe;

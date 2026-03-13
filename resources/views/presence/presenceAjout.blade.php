@@ -2,13 +2,15 @@
 @section('title', 'Pointage - Application')
 @section('content')
     <article class="pointage-parent">
-        <h3 class="pointage-title">Réaliser le pointage</h3>
+        <h2 style="color:#0e49c7; font-size:16px; font-weight:600;
+            margin-bottom:13px;">Accomplir une presence</h2>  
         <div class="pointage-formulaire">
             <button id="checkin">Entrée</button>
             <!-- <button id="checkout">Sortie</button> -->
         </div>
         <div class="pointage-affichage">
-            <h3 class="pointage-title">Tableau de pointage</h3>
+            <h2 style="color:#0e49c7; font-size:16px; font-weight:600;
+            margin-bottom:25px;">Tableau de pointage</h2>  
             <table class="pointage-affichage-table">
                 <thead class="pointage-head-affichage">
                     <tr class="pointage-tr-head">
