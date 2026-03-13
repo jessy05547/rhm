@@ -2,20 +2,21 @@
 @section('title', 'Authentification - Utilisateur')
 @section('content')
     @if (session('error'))
-        <div class="error-message" style="width:300px;height: auto;color: #d32f2f;background: #131216; padding: 10px; border-radius: 5px;display: flex;justify-content:center;font-weight: 500;align-items:center;gap:10px;position:absolute;z-index:9999;top:20px;left:0;right:0;margin:auto;">
+        <div class="error-message" style="width:300px;height: auto;color: #cf2323;background: #dfdde298; padding: 10px; border-radius: 5px;display: flex;justify-content:center;font-weight: 500;align-items:center;gap:10px;position:absolute;z-index:9999;top:20px;left:0;right:0;margin:auto;">
             {{ session('error') }}
         </div>
     @endif
     @if (session('sussecc'))
-        <div class="success" style="color: #2fd345;background: #131216; padding: 10px; border-radius: 5px;display: flex;justify-content:center;width:300px;height: 5vh;font-weight: 500;align-items:center;gap:10px;position:absolute;z-index:9999;top:20px;left:0;right:0;margin:auto;">
+        <div class="success" style="color: #016817;background: #e0dfe49a; padding: 10px; border-radius: 5px;display: flex;justify-content:center;width:300px;height: 5vh;font-weight: 500;align-items:center;gap:10px;position:absolute;z-index:9999;top:20px;left:0;right:0;margin:auto;">
             {{ session('success') }}
         </div>
     @endif
     <div class="blur-login"></div>
     <header class="login-parent">
+        <div class="blur-login-content"></div>
         <form action="{{ route('user.login') }}" method="POST" id="user-login">
             @csrf
-            <h3 class="user-login-title">Authentification</h3>
+            <h3 class="user-login-title">Page de connexion</h3>
             <div class="user-login-ground">
                 <div class="login-group">
                     <!-- <label for="email" class="login-lab">E-mail *</label> -->

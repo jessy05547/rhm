@@ -15,11 +15,6 @@
                 <form action="<?php echo e(route('presence.recherche')); ?>" method="get" id="src-profil">
                     <input type="text" name="search" id="search" placeholder="Est-ce que je suis présent ?" >
                 </form>
-                <form action="<?php echo e(route('deux.date')); ?>" method="get" id="entreDeuxDate" >
-                    <input type="date" name="date_debut" id="dateRequete">
-                    <input type="date" name="date_fin" id="dateRequete1">
-                </form>
-                <p id="combo"><i class="fi fi-ss-replace text-amber-50"></i></p>
             </div>
             <div class="all-profil">
                 <div class="profil-image">
@@ -53,24 +48,14 @@
                         <li><a href="<?php echo e(route('conge.liste')); ?>" class="<?php echo e(request()->routeIs('conge.liste') ? 'active' : ''); ?>"><i class="fi fi-rr-house-leave text-amber-50 text-xl"></i></a></li>
                         
                         <li><a href="<?php echo e(route('presence.presenceAjout')); ?>" class="<?php echo e(request()->routeIs('presence.presenceAjout') ? 'active' : ''); ?>"><i class="fi fi-rr-time-watch-calendar text-amber-50 text-xl"></i></a></li>
-                        
                     </ul>
-                    <!-- <ul id="infobulle">
-                        <li class="info_tools"><span id="tooltips">Tableau de bord</span></li>
-                        <li class="info_tools"><span id="tooltips">Employé</span></li>
-                        <li class="info_tools"><span id="tooltips">Congé</span></li>
-                        <li class="info_tools"><span id="tooltips">Pointage</span></li>
-                    </ul> -->
                 </nav>
                 <div class="btn-logout">
                     <ul id="logout-layout">
                         <li id="theme">
                             <a  href="<?php echo e(route('edit.utilisateur')); ?>" id="sombre">
-                                <i class="fi fi-ss-users text-amber-50 text-xl"></i>
+                                <i class="fi fi-sr-user text-amber-50 text-xl"></i>
                             </a>
-                            <!-- <button id="clair">
-                                <i class="fi fi-ss-moon-stars text-xl" style="display: none;color:#fca302;"></i>
-                            </button> -->
                         </li>
                         <li><a href="<?php echo e(route('user.logout')); ?>"><i class="fi fi-ss-exit text-amber-50 text-xl"></i></a></li>
                     </ul>
@@ -105,11 +90,7 @@
         const [y, m, d] = inputFin.value.split("-");
         const debut = new Date(year, moth - 1, day);
         const fin = new Date(y, m - 1, d);
-        /*const btn = document.getElementById('theme');
-
-        const conteneur = document.querySelector('.dashboard-body')
-        const iconSombre = document.getElementById('sombre');
-        const iconClair = document.getElementById('clair');*/
+       
 
         btn.addEventListener('click', () => {
             if (conteneur.classList.contains('parent-clair')) {
