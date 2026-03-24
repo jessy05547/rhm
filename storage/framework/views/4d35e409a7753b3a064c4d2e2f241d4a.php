@@ -31,6 +31,7 @@
                 <div class="login-validate">
                     <input type="submit" value="Se connecter" id="login-validate-btn">
                     <a href="<?php echo e(route('authentification.register')); ?>" class="register-user">Créer un compte</a>
+                    <a href="<?php echo e(route('token')); ?>">Mot de passe oublié</a>
                 </div>
             </div>
         </form>

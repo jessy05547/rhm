@@ -93,6 +93,27 @@ class contUtilisateur extends Controller
         }
         return response()->noContent();
     }
+    public function tokenGeneration(){
+        return view('authentification.token');
+    }
+    public function getToken(Request $request){
+        $credentials = $request->validate([
+            "email" => "required|email"
+        ]);
+        $utilisateur = utilisateur::where("email", $credentials["email"])->first();
+        if(!$utilisateur){
+            return back()->with('error', 'Votre email n\'existe pas!');
+            // return back()->withErrors(['email' => 'Les identifiants fournis sont incorrects!'])->onlyInput('email');
+        }
+        $request->session()->put('utilisateur_id',$utilisateur->id);
+        $request->session()->put('utilisateur_email', $utilisateur->email);
+        $request->session()->put('utilisateur_nom',$utilisateur->nom);
+        $request->session()->put('utilisateur_prenom', $utilisateur->prenom);
+        $request->session()->put('utilisateur_poste', $utilisateur->id_poste);
+
+        $profil = $utilisateur->getFirstMediaUrl('photos');
+        return redirect()->route('index.dashboard')->with('success', 'Token accepté');
+    }
     public function login(Request $request){
         $credentials = $request->validate([
             "email" => "required|email",

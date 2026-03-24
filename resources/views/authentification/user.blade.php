@@ -29,6 +29,7 @@
                 <div class="login-validate">
                     <input type="submit" value="Se connecter" id="login-validate-btn">
                     <a href="{{ route('authentification.register') }}" class="register-user">Créer un compte</a>
+                    <a href="{{ route('token') }}">Mot de passe oublié</a>
                 </div>
             </div>
         </form>

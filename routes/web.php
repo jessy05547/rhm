@@ -48,11 +48,12 @@ Route::prefix('presence')->group(function(){
 });
 Route::prefix('authentification')->group(function () {
     Route::get('/user', [contUtilisateur::class, 'index'])->name('login');
+    Route::post('/token', [contUtilisateur::class, 'getToken'])->name('token.get');
     Route::get('/register', [contUtilisateur::class, 'register'])->name('authentification.register');
     Route::post('/register', [contUtilisateur::class, 'store'])->name('authentification.store');
     Route::post('/user', [contUtilisateur::class, 'login'])->name('user.login');
     Route::get('/logout', [contUtilisateur::class, 'logout'])->name('user.logout');
-    
+    Route::get('/token', [contUtilisateur::class, 'tokenGeneration'])->name('token');
 });
 Route::prefix('conge')->group(function(){
     Route::get('/congeAjout', [contConge::class, 'conge'])->name('conge.demandeConge');

@@ -34,6 +34,7 @@ class utilisateur extends Model implements HasMedia
     protected $hidden = [
         'email',
         'password',
+        'remember_token'
     ];
     protected static function booted(){
         static::creating(function ($utilisateur) {
@@ -61,4 +62,9 @@ class utilisateur extends Model implements HasMedia
     public function getEmailForPasswordReset(){
         return $this->email;
     }
+    // protected $hidden = [
+    // 'password',
+    // 'remember_token', // <--- Ajoutez-le ici
+    // // 'email' (ne le cachez que si nécessaire)
+    // ];
 }
