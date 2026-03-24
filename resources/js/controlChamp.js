@@ -2,12 +2,51 @@ const input         = document.getElementById('register-input-naissance');
 const sms           = document.getElementById('message-date');
 
 const message       = document.getElementById('password-message');
+const mes      = document.getElementById('password-sms');
+const pwdp = document.getElementById('register-input-password');
+const pwdConf = document.getElementById('register-input-confirmation');
 const embaucheInput = document.getElementById('emp-input-cont-embauche');
 const embaucheSms   = document.getElementById('message-embauche');
 
 const success       = document.getElementsByClassName('success-message');
 
 const cin = document.getElementById('emp-input-cont-cin');
+
+pwdp.addEventListener('input', (e) => {
+    let value = pwdp.value;
+    if(value.length === 0){
+        mes.textContent = "";
+    }
+    else if(value.length < 8){
+        mes.textContent = "mot de passe inférieur à 8!";
+        mes.style.color = "red";
+        value.style.borderColor = "red";
+        mes.style.fontSize = "12px";
+    }
+    else{
+        mes.textContent = "Mot de passe accepté!";
+        mes.style.color = "green";
+        value.style.borderColor = "green";
+        mes.style.fontSize = "12px";
+    }
+});
+pwdConf.addEventListener('input', (e) => {
+    let value = pwdConf.value;
+    if(value != pwdp.value){
+        message.textContent = "votre mot de passe de confirmation est érroné!";
+        message.style.color = "red";
+        value.style.borderColor = "red";
+        message.style.fontSize = "12px";
+    }else if(value == '' & value.length === 0){
+        message.textContent = "";
+    }
+    else{
+        message.textContent = "Confirmation acceptée!";
+        message.style.color = "green";
+        value.style.borderColor = "green";
+        message.style.fontSize = "12px";
+    }
+});
 cin.addEventListener('input', function(e) {
     // 1. Supprimer tout ce qui n'est pas un chiffre
     let value = this.value.replace(/\D/g, '');

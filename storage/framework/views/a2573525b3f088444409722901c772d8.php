@@ -27,6 +27,7 @@
                 <div class="register-parent">
                     <label for="password" class="register-lab">Mot de passe *</label>
                     <input type="password" name="password" id="register-input-password" required minlength="8">
+                    <small id="password-sms"></small>
                 </div>
                 <div class="register-parent">
                     <label for="password_confirmation" class="register-lab">Confirmer le mot de passe *</label>
@@ -35,7 +36,7 @@
                 </div>
                 <div class="register-parent">
                     <label for="cin" class="register-lab">CIN *</label>
-                    <input type="number" name="cin" id="register-input" required pattern="[0-9]{12}" title="Vérifier si le nombre de caractère est égale 12.">
+                    <input type="text" name="cin" id="emp-input-cont-cin" required pattern="[0-9]{12}" title="Vérifier si le nombre de caractère est égale 12.">
                 </div>  
                 <div class="register-parent">
                     <label for="date_naissance" class="register-lab">Date de naissance *</label>

@@ -58,4 +58,7 @@ class utilisateur extends Model implements HasMedia
         $this->addMediaCollection('photos')
             ->singleFile();
     }
+    public function getEmailForPasswordReset(){
+        return $this->email;
+    }
 }

@@ -6,6 +6,26 @@
     padding: 0;
     box-sizing: border-box;
 }
+.error-message, .success-message{
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index:9999;
+    /* display:none; */
+    animation: message 0.8s ease-out;
+}
+@keyframes message {
+    from{
+        opacity: 0;
+        display:flex;
+        transform: translateY(-40px);
+    }
+    to{
+        opacity: 1;
+        display:flex;
+        transform: translateY(0);
+    }
+}
 #top-progress-bar{
     position:fixed;
     top:0;
@@ -138,7 +158,6 @@
     background: #000308;
     position:fixed;
     left:0;
-    
 }
 .parent .dashboard-menu .menu-columns{
     width:100%;
@@ -801,7 +820,8 @@
 #check-in-parent .check-in-conteneur #check-in-formulaire .check-in-groupe #check-in-input, #check-in-input-select, #check-in-input-motifs, #check-in-input-date{
     width:250px;
     height:35px;
-    color:#0f6c7c;
+    color:#000308;
+    font-weight:600;
     padding-left:8px;
     border-radius:8px;
     background: rgba(255, 255, 255, 0.123);
@@ -905,7 +925,8 @@
     width:250px;
     height:35px;
     font-size:14px;
-    color:#0f6c7c;
+    color:#000308;
+    font-weight:600;
     padding-left:8px;
     border-radius:8px;
     background: rgba(255, 255, 255, 0.123);

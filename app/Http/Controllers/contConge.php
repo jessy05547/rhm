@@ -47,8 +47,13 @@ class contConge extends Controller
                 'validation' => 'required|string|max:190'
             ]);
             $data['id_utilisateur'] = $userId;
-            $conge = conge::create($data);
-            return redirect()->route('conge.liste')->with('success', 'Le demande de congé est accepté');
+
+            if($data['date_sortie'] <= $data['date_entre']){
+                $conge = conge::create($data);
+                return redirect()->route('conge.liste')->with('success', 'Le demande de congé est accepté');
+            }else{
+                return redirect()->back()->with('error', 'la date de congé n\'est pas correct!');
+            }
         }catch(\Exception $e){
             return redirect()->back()->with('error', 'vous avez de quelque problème : ' . $e->getMessage());
         }

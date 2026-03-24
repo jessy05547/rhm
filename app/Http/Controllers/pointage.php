@@ -7,7 +7,11 @@ use App\Models\presence;
 use App\Models\employe;
 use GuzzleHttp\Promise\Create;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+
+use function Illuminate\Support\days;
+
 class pointage extends Controller
 {
     
@@ -44,12 +48,16 @@ class pointage extends Controller
             $checkinDateTime = Carbon::parse($request->date_pointage . ' ' . $request->check_in . ':00');
             $data['check_in'] = $checkinDateTime->format('Y-m-d H:i:s');
             $data['check_out'] = Carbon::parse($request->date_pointage . ' ' .'00:00:00')->format('Y-m-d H:i:s');
-
-            $presence = presence::create($data);
-
-            return redirect()->route('presence.presenceAjout')->with('success', 'Présence enregistrée!');
+            $prs = presence::where('id_employe', $data['id_employe'])
+            ->whereDate('date_pointage', now()->startOfDay()->format('Y-m-d'))->get();
+            if($prs){
+                $presence = presence::create($data);
+                return redirect()->route('presence.presenceAjout')->with('success', 'Présence enregistrée!');
+            }else{
+                return redirect()->route('presence.presenceAjout')->with('error', 'La présence est déjà enregistrée!');
+            }
+            // return redirect()->route('presence.presenceAjout')->with('success', 'Présence enregistrée!');
         }catch(\Exception $e){
-            
             return redirect()->route('presence.presenceAjout')->with('error', 'La présence est refusé!'. $e->getMessage());
         }
     }
@@ -68,7 +76,7 @@ class pointage extends Controller
 
             // 3. Récupération de la présence à mettre à jour
             $presence = presence::where('id', $id)->where('id_utilisateur', $userSession)->firstOrFail();
-
+            
             // 4. Mise à jour du champ check_out
             $checkoutDateTime = Carbon::parse($presence->date_pointage . ' ' . $request->check_out . ':00');
             $presence->check_out = $checkoutDateTime->format('Y-m-d H:i:s');
@@ -102,23 +110,23 @@ class pointage extends Controller
     }
     
 
-public function presentsEntreDeuxDates(Request $request) {
-    // On définit les dates (par exemple via le formulaire ou par défaut)
-    $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
-    $dateFin = $request->input('date_fin', now()->endOfMonth()->format('Y-m-d'));
-    $userSession = session('utilisateur_id');
+// public function presentsEntreDeuxDates(Request $request) {
+//     // On définit les dates (par exemple via le formulaire ou par défaut)
+//     $dateDebut = $request->input('date_debut', now()->startOfMonth()->format('Y-m-d'));
+//     $dateFin = $request->input('date_fin', now()->endOfMonth()->format('Y-m-d'));
+//     $userSession = session('utilisateur_id');
 
-    // Requête pour obtenir les employés uniques présents entre ces deux dates
-    $presents = employe::where('id_utilisateur', $userSession)
-        ->whereHas('presences', function($query) use ($dateDebut, $dateFin) {
-            $query->whereBetween('date_pointage', [$dateDebut, $dateFin]);
-        })
-        ->with(['presences' => function($query) use ($dateDebut, $dateFin) {
-            // Optionnel : on ne charge que les présences de cette période
-            $query->whereBetween('date_pointage', [$dateDebut, $dateFin]);
-        }])
-        ->get();
+//     // Requête pour obtenir les employés uniques présents entre ces deux dates
+//     $presents = employe::where('id_utilisateur', $userSession)
+//         ->whereHas('presences', function($query) use ($dateDebut, $dateFin) {
+//             $query->whereBetween('date_pointage', [$dateDebut, $dateFin]);
+//         })
+//         ->with(['presences' => function($query) use ($dateDebut, $dateFin) {
+//             // Optionnel : on ne charge que les présences de cette période
+//             $query->whereBetween('date_pointage', [$dateDebut, $dateFin]);
+//         }])
+//         ->get();
 
-    return view('presence.recherche', compact('presents', 'dateDebut', 'dateFin'));
-}
+//     return view('presence.recherche', compact('presents', 'dateDebut', 'dateFin'));
+// }
 }
