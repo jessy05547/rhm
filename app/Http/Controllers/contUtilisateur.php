@@ -83,7 +83,6 @@ class contUtilisateur extends Controller
 
         return response()->json(['error' => 'Fichier introuvable'], 400);
     }
-
     public function revert(Request $request)
     {
         // Logique pour supprimer le fichier si l'utilisateur clique sur "Annuler"
@@ -93,7 +92,11 @@ class contUtilisateur extends Controller
         }
         return response()->noContent();
     }
-    public function tokenGeneration(){
+    public function tokenGeneration(Request $request){
+        $userSession = $request->session()->get('utilisateur_id');
+         if ($userSession) {
+            return redirect()->route('index.dashboard')->with('error', 'Vous êtes déjà connecté.');
+        }
         return view('authentification.token');
     }
     public function getToken(Request $request){
