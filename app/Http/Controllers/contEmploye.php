@@ -11,6 +11,7 @@ use App\Models\presence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Models\utilisateur;
+use Illuminate\Validation\Rule;
 class contEmploye extends Controller
 {
     public function index()
@@ -57,19 +58,32 @@ class contEmploye extends Controller
             // Nettoyage et validation
             $cinValide = str_replace(' ', '', $request->input('cin'));
             $request->merge(['cin' => $cinValide]);
+
             $data = $request->validate([
-                'nom' => 'required|string|max:255',
-                'prenom' => 'required|string|max:255',
-                'cin' => 'required|digits:12|unique:employe_tables,cin',
-                'adresse' => 'required|string|max:255',
-                'email' => 'required|email|max:255|unique:employe_tables,email',
-                'id_poste' => 'required|integer|exists:poste_tables,id',
-                'id_departement' => 'required|integer|exists:departement_tables,id',
-                'date_embauche' => 'required|date',
-                'date_naissance' => 'required|date',
-                'telephone' => 'required|string|max:20',
-                'sexe' => 'required|string|in:Masculin,Féminin'
-            ]);
+            'nom' => 'required|string|max:255',
+            'prenom' => [
+                'required',
+                'string',
+                'max:255',
+                // Règle personnalisée pour vérifier le couple Nom + Prénom
+                Rule::unique('employe_tables')->where(function ($query) use ($request) {
+                    return $query->where('nom', $request->nom)
+                                 ->where('prenom', $request->prenom);
+                }),
+            ],
+            'cin' => 'required|digits:12|unique:employe_tables,cin',
+            'adresse' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:employe_tables,email',
+            'id_poste' => 'required|integer|exists:poste_tables,id',
+            'id_departement' => 'required|integer|exists:departement_tables,id',
+            'date_embauche' => 'required|date',
+            'date_naissance' => 'required|date',
+            'telephone' => 'required|string|max:20',
+            'sexe' => 'required|string|in:Masculin,Féminin'
+        ], [
+            // Message d'erreur personnalisé
+            'prenom.unique' => 'Un employé avec ce nom et ce prénom existe déjà dans la base de données.',
+        ]);
             $data['id_utilisateur'] = $userId;
             $employe = Employe::create($data); // Attention à la majuscule sur le modèle Employe
             // LOGIQUE MEDIA LIBRARY
@@ -135,7 +149,15 @@ class contEmploye extends Controller
         $employe = employe::findOrFail($id);
         $data = $request->validate([
             'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
+        'prenom' => [
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('employe_tables')->where(function ($query) use ($request) {
+                return $query->where('nom', $request->nom)
+                             ->where('prenom', $request->prenom);
+            })->ignore($id), // Ignore l'employé actuel lors de la vérification
+        ],
             'cin' => 'required|digits:12|unique:employe_tables,cin,' . $employe->id,
             'adresse' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:employe_tables,email,' . $employe->id,

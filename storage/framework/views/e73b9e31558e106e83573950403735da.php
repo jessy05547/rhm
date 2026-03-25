@@ -1,7 +1,6 @@
 
 <?php $__env->startSection('title', 'Ajouter des travailleurs'); ?>
 <?php $__env->startSection('content'); ?>
-    
     <h2 class="title-employe">s'enregistrer</h2>
     <form action="<?php echo e(route('employe.store')); ?>" method="post" enctype="multipart/form-data" id="form-employe">
         <?php echo csrf_field(); ?>

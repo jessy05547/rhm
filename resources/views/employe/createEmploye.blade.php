@@ -1,7 +1,6 @@
 @extends('index.layouts')
 @section('title', 'Ajouter des travailleurs')
 @section('content')
-    
     <h2 class="title-employe">s'enregistrer</h2>
     <form action="{{ route('employe.store') }}" method="post" enctype="multipart/form-data" id="form-employe">
         @csrf

@@ -1,120 +1,117 @@
-const input         = document.getElementById('register-input-naissance');
-const sms           = document.getElementById('message-date');
+document.addEventListener('DOMContentLoaded', () => {
 
-const message       = document.getElementById('password-message');
-const mes      = document.getElementById('password-sms');
-const pwdp = document.getElementById('register-input-password');
-const pwdConf = document.getElementById('register-input-confirmation');
-const embaucheInput = document.getElementById('emp-input-cont-embauche');
-const embaucheSms   = document.getElementById('message-embauche');
+    // --- SÉLECTION DES ÉLÉMENTS ---
+    const inputNaissance = document.getElementById('register-input-naissance');
+    const smsDate = document.getElementById('message-date');
+    const pwdp = document.getElementById('register-input-password');
+    const pwdConf = document.getElementById('register-input-confirmation');
+    const messagePwd = document.getElementById('password-message');
+    const smsPwd = document.getElementById('password-sms');
+    const embaucheInput = document.getElementById('emp-input-cont-embauche');
+    const embaucheSms = document.getElementById('message-embauche');
+    const cinInput = document.getElementById('emp-input-cont-cin');
 
-const success       = document.getElementsByClassName('success-message');
-
-const cin = document.getElementById('emp-input-cont-cin');
-
-pwdp.addEventListener('input', (e) => {
-    let value = pwdp.value;
-    if(value.length === 0){
-        mes.textContent = "";
+    // --- VALIDATION MOT DE PASSE (Uniquement si présent) ---
+    if (pwdp) {
+        pwdp.addEventListener('input', () => {
+            let value = pwdp.value;
+            if (value.length === 0) {
+                smsPwd.textContent = "";
+            } else if (value.length < 8) {
+                smsPwd.textContent = "mot de passe inférieur à 8!";
+                smsPwd.style.color = "red";
+                pwdp.style.borderColor = "red";
+            } else {
+                smsPwd.textContent = "Mot de passe accepté!";
+                smsPwd.style.color = "green";
+                pwdp.style.borderColor = "green";
+            }
+            smsPwd.style.fontSize = "12px";
+        });
     }
-    else if(value.length < 8){
-        mes.textContent = "mot de passe inférieur à 8!";
-        mes.style.color = "red";
-        value.style.borderColor = "red";
-        mes.style.fontSize = "12px";
+
+    // --- VALIDATION CONFIRMATION (Uniquement si présent) ---
+    if (pwdConf && pwdp) {
+        pwdConf.addEventListener('input', () => {
+            let value = pwdConf.value;
+            if (value === '') {
+                messagePwd.textContent = "";
+            } else if (value !== pwdp.value) {
+                messagePwd.textContent = "votre mot de passe de confirmation est érroné!";
+                messagePwd.style.color = "red";
+                pwdConf.style.borderColor = "red";
+            } else {
+                messagePwd.textContent = "Confirmation acceptée!";
+                messagePwd.style.color = "green";
+                pwdConf.style.borderColor = "green";
+            }
+            messagePwd.style.fontSize = "12px";
+        });
     }
-    else{
-        mes.textContent = "Mot de passe accepté!";
-        mes.style.color = "green";
-        value.style.borderColor = "green";
-        mes.style.fontSize = "12px";
+
+    // --- FORMATTAGE CIN (Uniquement si présent) ---
+    if (cinInput) {
+        cinInput.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length > 12) {
+                value = value.substring(0, 12);
+            }
+            let formattedValue = value.replace(/(\d{3})(?=\d)/g, '$1 ');
+            this.value = formattedValue;
+        });
+    }
+
+    // --- VALIDATION DATE D'EMBAUCHE (Uniquement si présent) ---
+    if (embaucheInput && embaucheSms) {
+        embaucheInput.addEventListener('input', () => {
+            if (!embaucheInput.value) return;
+
+            const selectedDate = new Date(embaucheInput.value);
+            const today = new Date();
+            
+            selectedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate <= today) {
+                embaucheSms.textContent = "Date acceptée !";
+                embaucheSms.style.color = "green";
+                embaucheInput.style.borderColor = "green";
+            } else {
+                embaucheSms.textContent = "Erreur : La date d'embauche ne peut pas être dans le futur.";
+                embaucheSms.style.color = "red";
+                embaucheInput.style.borderColor = "red";
+                embaucheInput.value = "";
+            }
+            embaucheSms.style.fontSize = "12px";
+        });
+    }
+
+    // --- VALIDATION DATE DE NAISSANCE / ÂGE (Uniquement si présent) ---
+    if (inputNaissance && smsDate) {
+        inputNaissance.addEventListener('input', () => {
+            if (!inputNaissance.value) return;
+            
+            const birthDate = new Date(inputNaissance.value);
+            const today = new Date();
+            
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age >= 21 && age < 60) {
+                smsDate.textContent = "Âge validé (" + age + " ans)";
+                smsDate.style.color = "green";
+                inputNaissance.style.borderColor = "green";
+            } else {
+                smsDate.textContent = "L'employé doit avoir entre 21 et 60 ans (Actuellement : " + age + " ans)";
+                smsDate.style.color = "red";
+                inputNaissance.style.borderColor = "red";
+                inputNaissance.value = "";
+            }
+            smsDate.style.fontSize = "12px";
+        });
     }
 });
-pwdConf.addEventListener('input', (e) => {
-    let value = pwdConf.value;
-    if(value != pwdp.value){
-        message.textContent = "votre mot de passe de confirmation est érroné!";
-        message.style.color = "red";
-        value.style.borderColor = "red";
-        message.style.fontSize = "12px";
-    }else if(value == '' & value.length === 0){
-        message.textContent = "";
-    }
-    else{
-        message.textContent = "Confirmation acceptée!";
-        message.style.color = "green";
-        value.style.borderColor = "green";
-        message.style.fontSize = "12px";
-    }
-});
-cin.addEventListener('input', function(e) {
-    // 1. Supprimer tout ce qui n'est pas un chiffre
-    let value = this.value.replace(/\D/g, '');
-
-    // 2. ON LIMITE À 12 CHIFFRES
-    if (value.length > 12) {
-        value = value.substring(0, 12);
-    }
-    // 2. Ajouter un espace tous les 3 chiffres (en partant de la fin)
-    // Cette regex regarde les groupes de 3 chiffres
-    let formattedValue = value.replace(/(\d{3})(?=\d)/g, '$1 ');
-
-    // 3. Réinjecter la valeur formatée dans l'input
-    this.value = formattedValue;
-});
-
-embaucheInput.addEventListener('input', () => {
-    const [year, moth, day] = embaucheInput.value.split("-");
-    const embaucheDate = new Date(year, moth - 1, day);
-    const today = new Date();
-
-    if(embaucheDate.getFullYear() == today.getFullYear() && embaucheDate.getMonth() == today.getMonth() && embaucheDate.getDate() <= today.getDate()){
-        embaucheSms.textContent = "Date accepté!";
-        embaucheSms.style.color = "green";
-        embaucheInput.style.borderColor = "green";
-        embaucheSms.style.fontSize = "12px";
-    }else if (embaucheDate.getFullYear() == today.getFullYear() && embaucheDate.getMonth() < today.getMonth()) {
-        embaucheSms.textContent = "Date accepté!";
-        embaucheSms.style.color = "green";
-        embaucheInput.style.borderColor = "green";
-        embaucheSms.style.fontSize = "12px";
-    }else if(embaucheDate.getFullYear() < today.getFullYear()){
-        embaucheSms.textContent = "Date accepté!";
-        embaucheSms.style.color = "green";
-        embaucheInput.style.borderColor = "green";
-        embaucheSms.style.fontSize = "12px";
-    }else{
-        embaucheSms.textContent = "Attention! la date est incorrect!";
-        embaucheSms.style.color = "red";
-        embaucheInput.style.borderColor = "red";
-        embaucheSms.style.fontSize = "12px";
-        embaucheInput.value = "";
-    }
-})
-input.addEventListener('input', () => {
-    if(!input.value && !embaucheInput.value){
-        sms.textContent = "";
-        embaucheSms.textContent = "";
-        return;
-    }
-    
-    const [y, m, d] = input.value.split("-");
-    const birth     = new Date(y, m - 1, d);
-    const today     = new Date();
-
-    let age = today.getFullYear() - birth.getFullYear();
-    if(age >= 21 && age < 60){
-        sms.textContent = "Âge validé!";
-        sms.style.color = "green";
-        input.style.border = "1px"
-        input.style.borderColor = "green";
-        sms.style.fontSize = "12px";
-    }else{
-        sms.textContent = "Vous devez avoir au moins 21 ans";
-        sms.style.color = "red";
-        input.style.borderColor = "red";
-        input.style.border = "1px";
-        sms.style.fontSize = "12px";
-        input.value = "";
-    }
-})

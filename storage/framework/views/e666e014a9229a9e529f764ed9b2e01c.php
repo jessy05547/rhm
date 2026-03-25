@@ -90,6 +90,44 @@
         const [y, m, d] = inputFin.value.split("-");
         const debut = new Date(year, moth - 1, day);
         const fin = new Date(y, m - 1, d);
+        const progressBar = document.createElement('div');
+        progressBar.id = 'top-progress-bar';
+        document.body.prepend(progressBar);
+        
+        const Progress = {
+            timer:null,
+            start(){
+                progressBar.classList.remove('progress-fade-out');
+                progressBar.style.width = '0%';
+                setTimeout(() => progressBar.style.width = '30%', 50);
+
+                // simulation d'une progression lente
+                this.timer = setInterval(() => {
+                    let currentWidth = parseFloat(progressBar.style.width);
+                    if(currentWidth < 90){
+                        progressBar.style.width = (currentWidth + Math.random() * 5) + '%';
+                    }
+                }, 400);
+            },
+            finish(){
+                clearInterval(this.timer);
+                progressBar.style.width = '100%';
+                setTimeout(() => {
+                    progressBar.classList.add('progress-fade-out');
+                    setTimeout(() =>progressBar.style.width = '0%', 300);
+                }, 200)
+            }
+        };
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if(!link.hash && link.hostname === window.location.hostname && !e.ctrlKey && !e.shiftKey){
+                    Progress.start();
+                }
+            });
+        });
+        window.addEventListener('load', () => Progress.finish());
+
+        
        
 
         btn.addEventListener('click', () => {
@@ -130,42 +168,7 @@
             }
         });
 
-        const progressBar = document.createElement('div');
-        progressBar.id = 'top-progress-bar';
-        document.body.prepend(progressBar);
         
-        const Progress = {
-            timer:null,
-            start(){
-                progressBar.classList.remove('progress-fade-out');
-                progressBar.style.width = '0%';
-                setTimeout(() => progressBar.style.width = '30%', 50);
-
-                // simulation d'une progression lente
-                this.timer = setInterval(() => {
-                    let currentWidth = parseFloat(progressBar.style.width);
-                    if(currentWidth < 90){
-                        progressBar.style.width = (currentWidth + Math.random() * 5) + '%';
-                    }
-                }, 400);
-            },
-            finish(){
-                clearInterval(this.timer);
-                progressBar.style.width = '100%';
-                setTimeout(() => {
-                    progressBar.classList.add('progress-fade-out');
-                    setTimeout(() =>progressBar.style.width = '0%', 300);
-                }, 200)
-            }
-        };
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                if(!link.hash && link.hostname === window.location.hostname && !e.ctrlKey && !e.shiftKey){
-                    Progress.start();
-                }
-            });
-        });
-        window.addEventListener('load', () => Progress.finish());
     </script>   
 </body>
 </html><?php /**PATH C:\wamp64\www\rhm\resources\views/index/layouts.blade.php ENDPATH**/ ?>
